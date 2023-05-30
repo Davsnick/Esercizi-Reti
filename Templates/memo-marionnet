@@ -1,0 +1,29 @@
+#configurazione permanente statica /etc/network/interfaces
+auto eth0
+iface eth0 inet static
+address 192.168.1.1
+
+#attivazione/disattivazione interfaccia di rete
+ifup eth0 (oppure ifup -a)
+ifdown eth0 (oppure ifdown -a)
+
+#consultare configurazione attuale
+ifconfig [-a] [<name>]
+ip addr show [dev <name>]
+
+#riavvio servizi di rete
+service networking restart
+systemctl restart networking
+
+#configurazione vlan con vde_switch
+#creazione vlan
+vlan/create vlan_number
+#vlan untagged
+port/setvlan port_number vlan_number
+#vlan tagged
+vlan/addport vlan_number port_number
+
+#debug vlan
+vlan/print
+
+
