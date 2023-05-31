@@ -5,25 +5,42 @@ import socket
 import sys
 import time
 import os
+import re
 from itertools import *
 
 HOST = '127.0.0.1'	#Standard loopback interface address (localhost)
 PORT = 8080	#Port to listen on (non-privileged ports are > 1023)
 
+def control(seed, niter):
+	if len(seed) != 1:
+		print('seed troppo lungo')
+		return 0
+	if seed.isnumeric() == False:
+		print('seed non numero')
+		return 0
+	if niter.isnumeric() == False:
+		print('niter non numero')
+		return 0
+	return 1
+
 def look_and_say(seed, niter):
 	seed = str(seed)
 	niter = int(niter)
 	arr = [seed]
+
 	def get_sequence(arr, niter, seed):
 		if niter == 0:
+			#print('esco')
 			return arr
 		else:
+			#print('itero')
 			current = ''.join(str(len(list(group))) + key for key,group in groupby(seed))
 			arr.append(current)
-			get_sequence(arr, niter, current)
+			get_sequence(arr, niter-1, current)
 		return arr
 
-	final_sequence = get_sequence(arr, niter-1, seed)
+	final_sequence = get_sequence(arr, niter, seed)
+	#print('ritorno')
 	return final_sequence
 
 
@@ -46,28 +63,37 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 		#padre con pid>0
 		if pid > 0:
-			print("I am parent process:")
-			print("Process ID:", os.getpid())
-			print("Child's process ID:", pid)
+			#print("I am parent process:")
+			#print("Process ID:", os.getpid())
+			#print("Child's process ID:", pid)
 			conn.close()
-
 
 		#figlio con pid=0
 		else:
-			print("\nI am child process:")
-			print("Process ID:", os.getpid())
-			print("Parent's process ID:", os.getppid())
+			#print("\nI am child process:")
+			#print("Process ID:", os.getpid())
+			#print("Parent's process ID:", os.getppid())
 
-			#print('Connected by', addr)
+			#ricevo i dati da un client
 			data = conn.recv(1024)
 			data = data.decode('utf-8')
 			seed, niter = data.split(",")
-			print('seed=' + seed + ', niter=' + niter)
-			sequence = look_and_say(seed, niter)
-			print('Here is the message: %s'% sequence.decode('utf-8'))
-			#conn.sendall(message.encode('utf-8'))
-			# socket must be closed by client! sleep for 1 second to wait for the client
-			time.sleep(1)
-	# otherwise socket goes to TIME_WAIT!
+			niter = niter.split("/")[0]
+			#print('seed=' + seed + ', niter=' + niter)
+			
+			#controllo che seed e niter siano corretti
+			if control(seed, niter) == 0:
+				print('- ERR')
+			else:
+				print('+OK '+ niter +' iterations on seed '+ seed +'/r/n')
+
+				sequence = look_and_say(seed, niter)
+
+				for line in sequence:
+					print(str(int(line)) + '/r/n')
+				
+				# socket must be closed by client! sleep for 1 second to wait for the client
+				time.sleep(1)
+
 
 
