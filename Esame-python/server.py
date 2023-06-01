@@ -43,22 +43,26 @@ def look_and_say(seed, niter):
 	#print('ritorno')
 	return final_sequence
 
-
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
-	#binding: operazione per fornire un numero di porta al client
+	"""
+	The BSD server creates a socket, uses bind to attach that socket to a port,
+	and configures it as a listening socket.
+	This allows the server to receive incoming connection requests.
+	Afterwards, accept is called, which will block the socket,
+	until an incoming connection request is received
+	"""
+	#binding
 	s.bind((HOST, PORT))
-
-	#listen: operazione per preparare il socket a ricevere una connessione
+	#listen
 	s.listen()
 
-	#ciclo infinito
+	#loop
 	while True:
-
-		#accept: accettazione della nuova richiesta di connessione
+		#accept
 		conn, addr = s.accept()
 
-		#fork per generare figli
+		#fork, generating child
 		pid = os.fork()
 
 		#padre con pid>0
@@ -92,8 +96,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 				for line in sequence:
 					print(str(int(line)) + '/r/n')
 				
-				# socket must be closed by client! sleep for 1 second to wait for the client
-				time.sleep(1)
+			# socket must be closed by client! sleep for 1 second to wait for the client
+			time.sleep(1)
+				
+			sys.exit()
 
 
 
