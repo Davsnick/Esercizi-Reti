@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-	#SERVER
 import socket
 import sys
 import time
@@ -8,20 +7,10 @@ import os
 import re
 from itertools import *
 
-HOST = '127.0.0.1'	#Standard loopback interface address (localhost)
-PORT = 8080	#Port to listen on (non-privileged ports are > 1023)
-
-def control(seed, niter):
-	if len(seed) != 1:
-		print('seed troppo lungo')
-		return 0
-	if seed.isnumeric() == False:
-		print('seed non numero')
-		return 0
-	if niter.isnumeric() == False:
-		print('niter non numero')
-		return 0
-	return 1
+# Standard loopback interface address (localhost)
+HOST = '127.0.0.1'
+# Port to listen on (non-privileged ports are > 1023)
+PORT = 8080
 
 def look_and_say(seed, niter):
 	seed = str(seed)
@@ -30,75 +19,85 @@ def look_and_say(seed, niter):
 
 	def get_sequence(arr, niter, seed):
 		if niter == 0:
-			#print('esco')
 			return arr
 		else:
-			#print('itero')
 			current = ''.join(str(len(list(group))) + key for key,group in groupby(seed))
 			arr.append(current)
 			get_sequence(arr, niter-1, current)
 		return arr
 
 	final_sequence = get_sequence(arr, niter, seed)
-	#print('ritorno')
-	return final_sequence
+	str_sequence = '\r\n'.join(final_sequence)
+	return str_sequence
 
+def serve_request(conn):
+	# receive request from client
+	req = conn.recv(1024).decode('ascii')
+	print(req)
+	# control request
+	m = re.match(r'^([0-9]),([0-9]+)\\r\\n$', req)
+	if not m:
+		# wrong request
+		conn.sendall('+ERR\r\n'.encode('ascii'))
+	else:
+		# right request
+		# get parameters from request
+		seed = m.group(1)
+		niter = int(m.group(2))
+		# send response line
+		msg = '+OK '+ str(niter) +' iterations on seed '+ seed +'\r\n'
+		conn.sendall(msg.encode('ascii'))
+		# process request
+		reply = look_and_say(seed, niter)
+		# send reply
+		conn.sendall(reply.encode('ascii'))
+		#print(reply)
+
+		time.sleep(1)
+		conn.close()
+
+"""
+The BSD server creates a socket, uses bind to attach that socket to a port,
+and configures it as a listening socket.
+This allows the server to receive incoming connection requests.
+Afterwards, accept is called, which will block the socket,
+until an incoming connection request is received
+"""
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+	# AF_INET means using IPv4
+	# SOCK_STREAM means using TCP
+	# use SOCK_DGRAM for UDP
 
-	"""
-	The BSD server creates a socket, uses bind to attach that socket to a port,
-	and configures it as a listening socket.
-	This allows the server to receive incoming connection requests.
-	Afterwards, accept is called, which will block the socket,
-	until an incoming connection request is received
-	"""
-	#binding
+	# BINDING
 	s.bind((HOST, PORT))
-	#listen
+	# LISTEN
 	s.listen()
-
-	#loop
+	# LOOP
 	while True:
-		#accept
+		# ACCEPT
 		conn, addr = s.accept()
-
-		#fork, generating child
+		# fork, generating child
 		pid = os.fork()
-
-		#padre con pid>0
+		# parent with pid > 0
 		if pid > 0:
-			#print("I am parent process:")
-			#print("Process ID:", os.getpid())
-			#print("Child's process ID:", pid)
+			"""
+			print("I am parent process:")
+			print("Process ID:", os.getpid())
+			print("Child's process ID:", pid)
+			"""
 			conn.close()
 
-		#figlio con pid=0
+		# child with pid = 0
 		else:
-			#print("\nI am child process:")
-			#print("Process ID:", os.getpid())
-			#print("Parent's process ID:", os.getppid())
+			"""
+			print("\nI am child process:")
+			print("Process ID:", os.getpid())
+			print("Parent's process ID:", os.getppid())
+			"""
 
-			#ricevo i dati da un client
-			data = conn.recv(1024)
-			data = data.decode('utf-8')
-			seed, niter = data.split(",")
-			niter = niter.split("/")[0]
-			#print('seed=' + seed + ', niter=' + niter)
+			# serve client request
+			serve_request(conn)
 			
-			#controllo che seed e niter siano corretti
-			if control(seed, niter) == 0:
-				print('- ERR')
-			else:
-				print('+OK '+ niter +' iterations on seed '+ seed +'/r/n')
-
-				sequence = look_and_say(seed, niter)
-
-				for line in sequence:
-					print(str(int(line)) + '/r/n')
-				
-			# socket must be closed by client! sleep for 1 second to wait for the client
-			time.sleep(1)
-				
 			sys.exit()
 
 
