@@ -18,7 +18,7 @@ def serve_request(conn):
 	print(request)
 
 	# control request
-	m = re.match(r'^regex\\r\\n$', req)
+	m = re.match(r'^regex\\r\\n$', request)
 	if not m:
 		# wrong request
 		conn.sendall('+ERR\r\n'.encode('ascii'))
