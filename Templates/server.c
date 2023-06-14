@@ -43,7 +43,7 @@ int main (int argc, char *argv[]) {
 
 		int socket(family, type, protocol)
 	*/
-	if (sockfd = socket(AF_INET, SOCK_STREAM, 0) < 0)
+	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		error("ERROR opening socket");
 	bzero((char *) &serv_addr, sizeof(serv_addr));	// bzero: function to clear buffer
 	serv_addr.sin_family = AF_INET;
@@ -76,7 +76,7 @@ int main (int argc, char *argv[]) {
 
 			int accept(socket descriptor, client address, address lenght)
 		*/
-		if (newsockfd = accept(sockfd, (struct sockaddr*) &cli_addr, &clilen) < 0)
+		if ((newsockfd = accept(sockfd, (struct sockaddr*) &cli_addr, &clilen)) < 0)
 			error("ERROR on accept");
 
 		/* fork, generating child */
