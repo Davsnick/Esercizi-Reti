@@ -2,7 +2,6 @@
 Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 
 # templates:
-# UNIMORE-reti
 
 #nano /etc/network/interfaces
 #vale per nodi statici o per il dhcp_server nel caso di reti dhcp
@@ -134,7 +133,8 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	iptables -t filter -A OUTPUT -o eth0.10 -p tcp --sport ssh -d {IP H1} -m state --state ESTABLISHED -j ACCEPT
 
 ------------------------------------------------------------------
-
+NAT
+se non c'è firewall dnat e snat vanno sul gateway
 #REGOLE DI NAT [10.0.1.129 corrisponde al server nella dmz]
 	#source nat, solo traffico tcp, per udp inserire -p udp
 	#dport è la porta da mascherare
