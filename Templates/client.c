@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 
 		int socket(family, type, protocol)
 	*/
-    if (sockfd = socket(AF_INET, SOCK_STREAM, 0) < 0)
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		error("ERROR opening socket");
 	/*
 		gethostbyname
