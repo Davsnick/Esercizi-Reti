@@ -97,6 +97,6 @@ int main(int argc, char *argv[]){
     printf("%s\n",buffer);
 
 	/* end */
-	//closesocket(sockfd);
+	close(sockfd);
     return 0;
 }
