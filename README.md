@@ -135,8 +135,11 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 ------------------------------------------------------------------
 
 #REGOLE DI NAT [10.0.1.129 corrisponde al server nella dmz]
-	iptables -t nat -A POSTROUTING -p tcp --dport www -s (netid da mascherare) -o eth1 -j MASQUERADE
-	iptables -t nat -A PREROUTING -i eth1 -p tcp --dport -d (IP del firewall in ingresso) www -j DNAT --to-destination (IP del server dopo l'uscita del firewall)
+	#source nat, solo traffico tcp, per udp inserire -p udp
+	#dport è la porta da mascherare
+	iptables -t nat -A POSTROUTING -p tcp --dport (porta: http, www, ecc.) -s (netid da mascherare) -o eth1 -j MASQUERADE
+	#destination nat, non maschera niente, è una ridirezione
+	iptables -t nat -A PREROUTING -i eth1 -p tcp --dport (porta) -d (IP del firewall in ingresso) www -j DNAT --to-destination (IP del server dopo l'uscita del firewall)
 	#per testare dnat server fare netcat al server al posto che al server di destinazione come port forwarding
 
 ------------------------------------------------------------------
