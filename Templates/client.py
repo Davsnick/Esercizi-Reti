@@ -5,8 +5,10 @@ import sys
 
 # Standard loopback interface address (localhost)
 HOST = '127.0.0.1'
+#HOST = sys.argv[1] # let user choose host, 'localhost'=127.0.0.1
 # Port to listen on (non-privileged ports are > 1023)
 PORT = 8080
+#PORT = int(sys.argv[2]) # let user choose port
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
