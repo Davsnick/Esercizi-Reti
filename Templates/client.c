@@ -51,7 +51,7 @@ int main(int argc, char *argv[]){
 		Retrieve host IP address from host name
 		return a hostent
 	*/
-    if (server = gethostbyname(argv[1]) == NULL) {
+    if ((server = gethostbyname(argv[1])) == NULL) {
         fprintf(stderr,"ERROR, no such host\n");
         exit(0);
     }
@@ -90,13 +90,13 @@ int main(int argc, char *argv[]){
 
 	/* reading from socket */
     bzero(buffer,256);
-    if (n = read(sockfd, buffer, 255) < 0)
+    if (read(sockfd, buffer, 255) < 0)
          error("ERROR reading from socket");
 
 	// debug print
     printf("%s\n",buffer);
 
 	/* end */
-	closesocket(sockfd);
+	//closesocket(sockfd);
     return 0;
 }
