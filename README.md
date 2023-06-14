@@ -86,6 +86,7 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	
 ------------------------------------------------------------------
 
+	TUTTE LE REGOLE DI IPTABLES VANNO SUL FIREWALL
 #iptables
 	iptables -t filter -P INPUT DROP
 	iptables -t filter -P OUTPUT DROP
