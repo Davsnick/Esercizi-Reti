@@ -123,7 +123,7 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 #PERMETTERE AL SERVER WEB TRAFFICO SULLA PORTA 80 WWW HTTP
 	
 	iptables -t filter -A FORWARD -p tcp --dport http -i eth0(interfaccia ingresso verso il client) -o eth0(interfaccia in uscita verso il web server) -d 192.168.200.1 -m state --state NEW,ESTABLISHED -j ACCEPT
-	iptables -t filter -A FORWARD -p tcp --sport http -0 eth0(interfaccia ingresso verso il client) -i eth0(interfaccia in uscita verso il web server) -s 192.168.200.1 -m state --state ESTABLISHED -j ACCEPT
+	iptables -t filter -A FORWARD -p tcp --sport http -o eth0(interfaccia ingresso verso il client) -i eth0(interfaccia in uscita verso il web server) -s 192.168.200.1 -m state --state ESTABLISHED -j ACCEPT
 
 #PERMETTERE AL SERVER MAIL TRAFFICO SULLA PORTA SMTP
 	
@@ -152,7 +152,7 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	#dport è la porta da mascherare
 	iptables -t nat -A POSTROUTING -p tcp --dport (porta: http, www, ecc.) -s (netid da mascherare) -o eth1 -j MASQUERADE
 	#destination nat, non maschera niente, è una ridirezione
-	iptables -t nat -A PREROUTING -i eth1 -p tcp --dport (porta) -d (IP del firewall in ingresso) www -j DNAT --to-destination (IP del server dopo l'uscita del firewall)
+	iptables -t nat -A PREROUTING -i eth1 -p tcp --dport (porta) -d (IP del firewall in ingresso) -j DNAT --to-destination (IP del server dopo l'uscita del firewall)
 	#per testare dnat server fare netcat al server al posto che al server di destinazione come port forwarding
 
 ------------------------------------------------------------------
