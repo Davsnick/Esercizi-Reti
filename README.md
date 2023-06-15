@@ -92,6 +92,7 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	iptables -t filter -P FORWARD DROP
 	
 #PING - ICMP
+	
 	#ping bidirezionale
 	iptables -t filter -A FORWARD -p icmp -i eth0(interfacia A del ping) -o eth0(interfacia B del ping) -j ACCEPT
 	iptables -t filter -A FORWARD -p icmp -o eth0(interfacia A del ping) -i eth0(interfacia B del ping) -j ACCEPT
@@ -110,18 +111,22 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	iptables -t filter -A INPUT -i eth1(interfaccia verso il dhcp server) -p udp -s 192.168.1.253(indirizzo dhcp server) --sport 67 -d 155.185.1.6(indirizzo firewall-dhcp relay) --dport 67 -m state --state ESTABLISHED -j ACCEPT
 
 #DNS LAN
+	
 	iptables -t filter -A INPUT -i eth0(interfaccia ingresso verso il client) -p udp --dport 53 -j ACCEPT
 	iptables -t filter -A OUTPUT -o eth0(interfaccia ingresso verso il client) -p udp --sport 53 -j ACCEPT
 
 #DNS DMZ
+	
 	iptables -t filter -A INPUT -i eth0(interfaccia ingresso verso DMZ) -p udp --dport 53 -j ACCEPT
 	iptables -t filter -A OUTPUT -o eth0(interfaccia ingresso verso DMZ) -p udp --sport 53 -j ACCEPT
 
 #PERMETTERE AL SERVER WEB TRAFFICO SULLA PORTA 80 WWW HTTP
+	
 	iptables -t filter -A FORWARD -p tcp --dport http -i eth0(interfaccia ingresso verso il client) -o eth0(interfaccia in uscita verso il web server) -d 192.168.200.1 -m state --state NEW,ESTABLISHED -j ACCEPT
 	iptables -t filter -A FORWARD -p tcp --sport http -0 eth0(interfaccia ingresso verso il client) -i eth0(interfaccia in uscita verso il web server) -s 192.168.200.1 -m state --state ESTABLISHED -j ACCEPT
 
 #PERMETTERE AL SERVER MAIL TRAFFICO SULLA PORTA SMTP
+	
 	iptables -t filter -A FORWARD -p tcp --dport smtp -i eth0(interfaccia ingresso verso il client) -o eth0(interfaccia in uscita verso il mail server) -d 192.168.200.1 -m state --state NEW,ESTABLISHED -j ACCEPT
 	iptables -t filter -A FORWARD -p tcp --sport smtp -0 eth0(interfaccia ingresso verso il client) -i eth0(interfaccia in uscita verso il mail server) -s 192.168.200.1 -m state --state ESTABLISHED -j ACCEPT
 
@@ -130,6 +135,7 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	iptables -t filter -A FORWARD -o eth0(interfaccia ingresso verso il client) -i eth0(interfaccia in uscita verso il server) -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 #SSH
+	
 	iptables -t filter -A INPUT -i eth0.10 -p tcp --dport ssh -s {IP H1} -m state --state NEW,ESTABLISHED -j ACCEPT
 	iptables -t filter -A OUTPUT -o eth0.10 -p tcp --sport ssh -d {IP H1} -m state --state ESTABLISHED -j ACCEPT
 
