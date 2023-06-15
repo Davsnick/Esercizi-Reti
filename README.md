@@ -133,10 +133,15 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	iptables -t filter -A OUTPUT -o eth0.10 -p tcp --sport ssh -d {IP H1} -m state --state ESTABLISHED -j ACCEPT
 
 ------------------------------------------------------------------
-NAT
-se non c'è firewall dnat e snat vanno sul gateway
-#REGOLE DI NAT [10.0.1.129 corrisponde al server nella dmz]
-	#source nat, solo traffico tcp, per udp inserire -p udp
+#NAT
+	
+	#se non c'è firewall dnat e snat vanno sul gatewa
+	
+	
+	#REGOLE DI NAT [10.0.1.129 corrisponde al server nella dmz
+		
+	
+	source nat, solo traffico tcp, per udp inserire -p udp
 	#dport è la porta da mascherare
 	iptables -t nat -A POSTROUTING -p tcp --dport (porta: http, www, ecc.) -s (netid da mascherare) -o eth1 -j MASQUERADE
 	#destination nat, non maschera niente, è una ridirezione
