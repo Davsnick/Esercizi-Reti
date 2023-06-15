@@ -91,6 +91,11 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	iptables -t filter -P OUTPUT DROP
 	iptables -t filter -P FORWARD DROP
 	
+#vedere le regole
+	
+	iptables -t filter -L -wn
+	
+	
 #PING - ICMP
 	
 	#ping bidirezionale
