@@ -101,6 +101,7 @@ Esercizi svolti nelle lezioni di laboratorio di Reti marzo-giugno 2023
 	iptables -t filter -A FORWARD -p icmp -o eth0(interfaccia di richesta del ping) -i eth0(interfaccia di risposta del ping) -state --state RELATED,ESTABLISHED -j ACCEPT	#da testare
 
 #DHCP
+	
 	iptables -t filter -A INPUT -i eth0(interfaccia ingresso verso il client) -p udp --dport 67 --sport 68 -j ACCEPT
 	iptables -t filter -A OUTPUT -o eth0(interfaccia ingresso verso il client) -p udp --sport 67 --dport 68 -j ACCEPT
 	
